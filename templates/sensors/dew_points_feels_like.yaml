@@ -15,18 +15,3 @@
     {% else %}
       Dangerously Humid
     {% endif %}
-  icon: >-
-    {% set dp = (states('sensor.storage_climate_sensor_dew_point') | float) %}
-    {% if dp < 55 %}
-      mdi:emoticon-cool
-    {% elif 55 <= dp < 60 %}
-      mdi:emoticon-happy
-    {% elif 60 <= dp < 65 %}
-      mdi:emoticon-neutral
-    {% elif 65 <= dp < 70 %}
-      mdi:emoticon-sad
-    {% elif 70 <= dp < 75 %}
-      mdi:emoticon-angry
-    {% else %}
-      mdi:emoticon-dead
-    {% endif %}
