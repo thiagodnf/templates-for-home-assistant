@@ -1,0 +1,28 @@
+- name: Current Weather Season
+  unique_id: current_weather_season
+  state: >-
+    {% set today = now().strftime('%m-%d') %}
+    {% if '03-19' <= today < '06-19' %}
+      Spring
+    {% elif '06-19' <= today < '09-21' %}
+      Summer
+    {% elif '09-21' <= today < '12-21' %}
+      Fall
+    {% elif '12-21' <= today < '03-19' %}
+      Winter
+    {% else %}
+      unavailable
+    {% endif %}
+  icon: >-
+    {% set today = now().strftime('%m-%d') %}
+    {% if '03-19' <= today < '06-19' %}
+      mdi:flower
+    {% elif '06-19' <= today < '09-21' %}
+      mdi:weather-sunny
+    {% elif '09-21' <= today < '12-21' %}
+      mdi:leaf
+    {% elif '12-21' <= today < '03-19' %}
+      mdi:snowflake
+    {% else %}
+      mdi:help
+    {% endif %}

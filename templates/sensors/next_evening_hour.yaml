@@ -1,0 +1,15 @@
+- name: Next Evening Hour
+  unique_id: next_evening_hour
+  state: >-
+    {% if is_state('sensor.current_weather_season', 'Spring') %}
+      17
+    {% elif is_state('sensor.current_weather_season', 'Summer') %}
+      18
+    {% elif is_state('sensor.current_weather_season', 'Fall') %}
+      17
+    {% elif is_state('sensor.current_weather_season', 'Winter') %}
+      16
+    {% else %}
+      16
+    {% endif %}
+  icon: mdi:weather-sunset
