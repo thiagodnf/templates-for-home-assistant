@@ -6,3 +6,38 @@
     {% set t = (states('sensor.storage_climate_sensor_temperature_sensor') | float) %}
     {% set h = (states('sensor.storage_climate_sensor_humidity_sensor') | float) %}
     {{ t - ((100 - h) / 5) }}
+  icon: >-
+    {% set t = (states('sensor.storage_climate_sensor_temperature_sensor') | float) %}
+    {% set h = (states('sensor.storage_climate_sensor_humidity_sensor') | float) %}
+    {% set dp = t - ((100 - h) / 5) %}
+    {% if dp < 55 %}
+      mdi:emoticon-cool
+    {% elif 55 <= dp < 60 %}
+      mdi:emoticon-happy
+    {% elif 60 <= dp < 65 %}
+      mdi:emoticon-neutral
+    {% elif 65 <= dp < 70 %}
+      mdi:emoticon-sad
+    {% elif 70 <= dp < 75 %}
+      mdi:emoticon-angry
+    {% else %}
+      mdi:emoticon-dead
+    {% endif %}
+  attributes:
+    feels_like: >
+      {% set t = (states('sensor.storage_climate_sensor_temperature_sensor') | float) %}
+      {% set h = (states('sensor.storage_climate_sensor_humidity_sensor') | float) %}
+      {% set dp = t - ((100 - h) / 5) %}
+      {% if dp < 55 %}
+        Pleasant
+      {% elif 55 <= dp < 60 %}
+        Comfortable
+      {% elif 60 <= dp < 65 %}
+        Getting Sticky
+      {% elif 65 <= dp < 70 %}
+        Uncomfortable
+      {% elif 70 <= dp < 75 %}
+        Very Humid and Uncomfortable
+      {% else %}
+        Dangerously Humid
+      {% endif %}
