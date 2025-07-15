@@ -1,1 +1,1 @@
-# template-sensors-for-home-assistant
+# template-for-home-assistant
