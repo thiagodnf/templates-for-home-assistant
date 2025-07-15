@@ -1,0 +1,8 @@
+- name: Storage Climate Sensor Dew Point
+  unique_id: storage_climate_sensor_dew_point
+  device_class: temperature
+  unit_of_measurement: °F
+  state: >-
+    {% set t = (states('sensor.storage_climate_sensor_temperature_sensor') | float) %}
+    {% set h = (states('sensor.storage_climate_sensor_humidity_sensor') | float) %}
+    {{ t - ((100 - h) / 5) }}
