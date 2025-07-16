@@ -1,28 +1,29 @@
-- name: Day Period
-  unique_id: day_period
-  state: >-
-    {% set h = now().hour %}
-    {% set evening = states('sensor.next_evening_hour') | int %}
+- sensor:
+  - name: Day Period
+    unique_id: day_period
+    state: >-
+      {% set h = now().hour %}
+      {% set evening = states('sensor.next_evening_hour') | int %}
 
-    {% if 6 <= h < 12 %}
-      Morning
-    {% elif 12 <= h < evening %}
-      Afternoon
-    {% elif evening <= h < 22 %}
-      Evening
-    {% else %}
-      Night
-    {% endif %}
-  icon: >-
-    {% set h = now().hour %}
-    {% set evening = states('sensor.next_evening_hour') | int %}
+      {% if 6 <= h < 12 %}
+        Morning
+      {% elif 12 <= h < evening %}
+        Afternoon
+      {% elif evening <= h < 22 %}
+        Evening
+      {% else %}
+        Night
+      {% endif %}
+    icon: >-
+      {% set h = now().hour %}
+      {% set evening = states('sensor.next_evening_hour') | int %}
 
-    {% if 6 <= h < 12 %}
-      mdi:weather-sunset-up
-    {% elif 12 <= h < evening %}
-      mdi:weather-sunny
-    {% elif evening <= h < 22 %}
-      mdi:weather-sunset-down
-    {% else %}
-      mdi:weather-night
-    {% endif %}
+      {% if 6 <= h < 12 %}
+        mdi:weather-sunset-up
+      {% elif 12 <= h < evening %}
+        mdi:weather-sunny
+      {% elif evening <= h < 22 %}
+        mdi:weather-sunset-down
+      {% else %}
+        mdi:weather-night
+      {% endif %}

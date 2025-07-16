@@ -1,7 +1,7 @@
 - use_blueprint:
     path: dew_point_sensor.yaml
     input:
-      temperature_sensor_entity_id: sensor.storage_climate_sensor_temperature_sensor
-      humidity_sensor_entity_id: sensor.storage_climate_sensor_humidity_sensor
-  name: Storage Climate Sensor Dew Point
-  unique_id: storage_climate_sensor_dew_point
+      temperature_sensor_entity_id: sensor.basement_climate_sensor_temperature_sensor
+      humidity_sensor_entity_id: sensor.basement_climate_sensor_humidity_sensor
+  name: Basement Climate Sensor Dew Point
+  unique_id: basement_climate_sensor_dew_point
