@@ -41,17 +41,17 @@ sensor:
       {% set dp = (states(this.entity_id) | float) %}
 
       {% if dp < 55 %}
-          🟢
+          🔵
       {% elif 55 <= dp < 60 %}
-          🟡
+          🟢
       {% elif 60 <= dp < 65 %}
-          🟠
+          🟡
       {% elif 65 <= dp < 70 %}
-          🔴
+          🟠
       {% elif 70 <= dp < 75 %}
-          🟣
+          🔴
       {% else %}
-          ⚫
+          🟣
       {% endif %}
     feels_like: >-
       {% set dp = (states(this.entity_id) | float) %}
