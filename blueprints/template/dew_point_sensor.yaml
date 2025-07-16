@@ -1,0 +1,71 @@
+blueprint:
+  name: Dew Point Sensor
+  description: Creates a template sensor that calculates dew point based on selected temperature and humidity sensors.
+  domain: template
+  # source_url: https://github.com/home-assistant/core/blob/dev/homeassistant/components/template/blueprints/inverted_binary_sensor.yaml
+  input:
+    temperature_sensor_entity_id:
+      name: Temperarure Sensor
+      description: Select a sensor that provides temperature readings
+      selector:
+        entity:
+          domain: sensor
+          device_class: temperature
+    humidity_sensor_entity_id:
+      name: Humidity Sensor
+      description: Select a sensor that provides humidity readings
+      selector:
+        entity:
+          domain: sensor
+          device_class: humidity
+variables:
+  t: !input temperature_sensor_entity_id
+  h: !input humidity_sensor_entity_id
+sensor:
+  device_class: temperature
+  unit_of_measurement: °F
+  icon: mdi:thermometer-water
+  state: >-
+    {% set T_f = (states(t) | float) %}
+    {% set RH = (states(h) | float) %}
+
+    {% set T = (T_f - 32) * 5 / 9 %}
+    {% set b = 17.62 %}
+    {% set c = 243.12 %}
+    {% set alpha = ((b * T) / (c + T)) + log(RH / 100) %}
+    {% set dp_c = (c * alpha) / (b - alpha) %}
+
+    {{ (dp_c * 9 / 5) + 32 }}
+  attributes:
+    mood: >-
+      {% set dp = (states(this.entity_id) | float) %}
+
+      {% if dp < 55 %}
+          🟢
+      {% elif 55 <= dp < 60 %}
+          🟡
+      {% elif 60 <= dp < 65 %}
+          🟠
+      {% elif 65 <= dp < 70 %}
+          🔴
+      {% elif 70 <= dp < 75 %}
+          🟣
+      {% else %}
+          ⚫
+      {% endif %}
+    feels_like: >-
+      {% set dp = (states(this.entity_id) | float) %}
+
+      {% if dp < 55 %}
+          Pleasant
+      {% elif 55 <= dp < 60 %}
+          Comfortable
+      {% elif 60 <= dp < 65 %}
+          Getting Sticky
+      {% elif 65 <= dp < 70 %}
+          Uncomfortable
+      {% elif 70 <= dp < 75 %}
+          Very Humid
+      {% else %}
+          Dangerously Humid
+      {% endif %}
