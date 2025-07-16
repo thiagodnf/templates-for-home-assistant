@@ -7,3 +7,10 @@
     {% set t = (states('sensor.storage_climate_sensor_temperature_sensor') | float) %}
     {% set h = (states('sensor.storage_climate_sensor_humidity_sensor') | float) %}
     {{ t - ((100 - h) / 5) }}
+  attributes:
+    mood: >-
+      {% from 'dew_point/formatter.jinja' import to_mood %}
+      {{ to_mood(this.entity_id) }}
+    feels_like: >-
+      {% from 'dew_point/formatter.jinja' import to_feels_like %}
+      {{ to_feels_like(this.entity_id) }}

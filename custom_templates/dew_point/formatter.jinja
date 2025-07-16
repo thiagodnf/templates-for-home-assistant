@@ -1,0 +1,33 @@
+{% macro to_feels_like(entity_id) %}
+{% set dp = (states(entity_id) | float) %}
+{% if dp < 55 %}
+    Pleasant
+{% elif 55 <= dp < 60 %}
+    Comfortable
+{% elif 60 <= dp < 65 %}
+    Getting Sticky
+{% elif 65 <= dp < 70 %}
+    Uncomfortable
+{% elif 70 <= dp < 75 %}
+    Very Humid
+{% else %}
+    Dangerously Humid
+{% endif %}
+{% endmacro %}
+
+{% macro to_mood(entity_id) %}
+{% set dp = (states(entity_id) | float) %}
+{% if dp < 55 %}
+    😎
+{% elif 55 <= dp < 60 %}
+    🙂
+{% elif 60 <= dp < 65 %}
+    💧
+{% elif 65 <= dp < 70 %}
+    🥵
+{% elif 70 <= dp < 75 %}
+    😡
+{% else %}
+    ☠️
+{% endif %}
+{% endmacro %}
