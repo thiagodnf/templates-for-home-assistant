@@ -4,9 +4,10 @@
   unit_of_measurement: °F
   icon: mdi:thermometer-water
   state: >-
-    {% set t = (states('sensor.storage_climate_sensor_temperature_sensor') | float) %}
-    {% set h = (states('sensor.storage_climate_sensor_humidity_sensor') | float) %}
-    {{ t - ((100 - h) / 5) }}
+    {% from 'dew_point/calculate.jinja' import calculate %}
+    {% set t = 'sensor.storage_climate_sensor_temperature_sensor' %}
+    {% set h = 'sensor.storage_climate_sensor_humidity_sensor' %}
+    {{ calculate(t, h) }}
   attributes:
     mood: >-
       {% from 'dew_point/formatter.jinja' import to_mood %}
