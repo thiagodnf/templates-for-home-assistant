@@ -18,9 +18,19 @@ blueprint:
         entity:
           domain: sensor
           device_class: humidity
+    feels_like_emoji_type:
+      name: Mood's emoji
+      description: show the mood emoji
+      default: Circles
+      selector:
+        select:
+          options:
+            - Circles
+            - Faces
 variables:
   t: !input temperature_sensor_entity_id
   h: !input humidity_sensor_entity_id
+  et: !input feels_like_emoji_type
 sensor:
   device_class: temperature
   unit_of_measurement: °F
@@ -55,18 +65,25 @@ sensor:
       {% else %}
         6
       {% endif %}
-    mood: >-
-      {% set level = (state_attr(this.entity_id, 'level') | float) %}
-      {% set icons = {
-        0: "⚪️",
-        1: "🔵",
-        2: "🟢",
-        3: "🟡",
-        4: "🟠",
-        5: "🔴",
-        6: "🟣",
-      } %}
-      {{ icons.get(level, "🟡") }}
+    feels_like_as_emoji: >-
+      {% set level = (state_attr(this.entity_id, 'level') | int) %}
+
+      {% set circles = ["⚪️", "🔵", "🟢", "🟡", "🟠", "🔴", "🟣"] %}
+      {% set faces   = ["🥰", "☺️", "🙂", "🤨", "😰", "🥵", "🤬"] %}
+
+      {% if et == "Circles" %}
+        {% set icons = circles %}
+      {% elif et == "Faces" %}
+        {% set icons = faces %}
+      {% else %}
+        {% set icons = circles %}
+      {% endif %}
+
+      {% if 0 <= level < icons | length %}
+        {{ icons[level] }}
+      {% else %}
+        ❓
+      {% endif %}
     feels_like: >-
       {% set level = (state_attr(this.entity_id, 'level') | float) %}
       {% set icons = {
