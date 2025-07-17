@@ -5,7 +5,7 @@ blueprint:
   # source_url: https://github.com/home-assistant/core/blob/dev/homeassistant/components/template/blueprints/inverted_binary_sensor.yaml
   input:
     temperature_sensor_entity_id:
-      name: Temperarure Sensor
+      name: Temperature Sensor
       description: Select a sensor that provides temperature readings
       selector:
         entity:
@@ -29,43 +29,53 @@ sensor:
     {% set T_f = (states(t) | float) %}
     {% set RH = (states(h) | float) %}
 
-    {% set T = (T_f - 32) * 5 / 9 %}
-    {% set b = 17.62 %}
-    {% set c = 243.12 %}
-    {% set alpha = ((b * T) / (c + T)) + log(RH / 100) %}
+    {% set T = (T_f - 32.0) * 5.0 / 9.0 %}
+    {% set b = 17.625 %}
+    {% set c = 243.04  %}
+    {% set alpha = ((b * T) / (c + T)) + log(RH / 100.0) %}
     {% set dp_c = (c * alpha) / (b - alpha) %}
 
-    {{ (dp_c * 9 / 5) + 32 }}
+    {{ (dp_c * 9.0 / 5.0) + 32.0 }}
   attributes:
+    level: >-
+      {% set dp = (states(this.entity_id) | float) %}
+
+      {% if dp < 50 %}
+        0
+      {% elif dp < 55 %}
+        1
+      {% elif dp < 60 %}
+        2
+      {% elif dp < 65 %}
+        3
+      {% elif dp < 70 %}
+        4
+      {% elif dp < 75 %}
+        5
+      {% else %}
+        6
+      {% endif %}
     mood: >-
-      {% set dp = (states(this.entity_id) | float) %}
-
-      {% if dp < 55 %}
-          🔵
-      {% elif 55 <= dp < 60 %}
-          🟢
-      {% elif 60 <= dp < 65 %}
-          🟡
-      {% elif 65 <= dp < 70 %}
-          🟠
-      {% elif 70 <= dp < 75 %}
-          🔴
-      {% else %}
-          🟣
-      {% endif %}
+      {% set level = (state_attr(this.entity_id, 'level') | float) %}
+      {% set icons = {
+        0: "⚪️",
+        1: "🔵",
+        2: "🟢",
+        3: "🟡",
+        4: "🟠",
+        5: "🔴",
+        6: "🟣",
+      } %}
+      {{ icons.get(level, "🟡") }}
     feels_like: >-
-      {% set dp = (states(this.entity_id) | float) %}
-
-      {% if dp < 55 %}
-          Pleasant
-      {% elif 55 <= dp < 60 %}
-          Comfortable
-      {% elif 60 <= dp < 65 %}
-          Getting Sticky
-      {% elif 65 <= dp < 70 %}
-          Uncomfortable
-      {% elif 70 <= dp < 75 %}
-          Very Humid
-      {% else %}
-          Dangerously Humid
-      {% endif %}
+      {% set level = (state_attr(this.entity_id, 'level') | float) %}
+      {% set icons = {
+        0: "Very Pleasant",
+        1: "Pleasant",
+        2: "Comfortable",
+        3: "Getting Sticky",
+        4: "Uncomfortable",
+        5: "Very Humid",
+        6: "Dangerously Humid",
+      } %}
+      {{ icons.get(level, "Getting Sticky") }}
