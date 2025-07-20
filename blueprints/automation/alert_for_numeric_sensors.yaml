@@ -1,0 +1,74 @@
+blueprint:
+  name: Alert for Numeric Sensors
+  description: Sends notifications when a numeric sensor exceeds a threshold and when it returns to normal
+  domain: automation
+  author: Thiago Ferreira
+  homeassistant:
+    min_version: 2024.6.0
+  input:
+    entity_id:
+      name: Numeric Sensor Entity
+      description: Select a numeric sensor to monitor.
+      selector:
+        entity:
+          domain:
+            - sensor
+            - number
+            - input_number
+    value:
+      name: Threshold Value
+      description: Numeric value the sensor must exceed to trigger the alert
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 100000
+          step: 1
+    for:
+      name: Trigger Delay Duration
+      description: Time (in seconds) the threshold must be exceeded before triggering the alert
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 3600
+          step: 1
+          unit_of_measurement: seconds
+          mode: slider
+
+variables:
+  entity_id: !input entity_id
+  device_name: "{{ device_name(entity_id) }}"
+  friendly_name: "{{ state_attr(entity_id, 'friendly_name') }}"
+  entity_name: "{{ friendly_name | replace(device_name, '') | trim }}"
+  notification_tag: "{{ entity_id }}"
+
+trigger:
+  - trigger: numeric_state
+    entity_id: !input entity_id
+    for: !input for
+    above: !input value
+
+condition: []
+
+action:
+  - action: script.notify_thiago_s_iphone
+    data:
+      notification_tag: "{{ notification_tag }}"
+      interruption_level: time-sensitive
+      title: "{{ device_name }}"
+      message: "⚠️ {{ entity_name }} is critically high"
+
+  - wait_for_trigger:
+      trigger: numeric_state
+      entity_id: !input entity_id
+      below: !input value
+
+  - action: script.notify_thiago_s_iphone
+    data:
+      notification_tag: "{{ notification_tag }}"
+      interruption_level: time-sensitive
+      title: "{{ device_name }}"
+      message: "✅ {{ entity_name }} back to normal"
+
+mode: single
